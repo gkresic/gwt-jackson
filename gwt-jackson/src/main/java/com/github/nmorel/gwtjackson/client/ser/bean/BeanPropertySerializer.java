@@ -100,6 +100,24 @@ public abstract class BeanPropertySerializer<T, V> extends HasSerializer<V, Json
      * @param ctx context of the serialization process
      */
     public void serialize( JsonWriter writer, T bean, JsonSerializationContext ctx ) {
-        getSerializer().serialize( writer, getValue( bean, ctx ), ctx, getParameters() );
+    	V value;
+    	try {
+    		value = getValue( bean, ctx );
+		} catch (Exception e) {
+			boolean shouldIgnore = false;
+			Throwable t = e;
+			do {
+				if (t instanceof com.steatoda.commons.fields.FieldUnavailableException) {
+					shouldIgnore = true;
+					break;
+				}
+				t = t.getCause();
+			} while (t != null);
+			if (shouldIgnore)
+				value = null;
+			else
+				throw e;
+		}
+        getSerializer().serialize( writer, value, ctx, getParameters() );
     }
 }

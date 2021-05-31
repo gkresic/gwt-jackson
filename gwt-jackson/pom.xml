@@ -21,7 +21,7 @@
   <parent>
     <artifactId>gwt-jackson-parent</artifactId>
     <groupId>com.github.nmorel.gwtjackson</groupId>
-    <version>0.15.5-SNAPSHOT</version>
+    <version>0.15.5.FIELDS-SNAPSHOT</version>
   </parent>
 
   <artifactId>gwt-jackson</artifactId>
@@ -130,7 +130,23 @@
     </plugins>
   </build>
 
+  <repositories>
+    <repository>
+      <id>local</id>
+      <name>Local Repository</name>
+      <url>file:///home/gkresic/.m2/repository</url>
+    </repository>
+  </repositories>
+
   <dependencies>
+
+	<!-- Steatoda dependencies -->
+	<dependency>
+          <groupId>com.steatoda</groupId>
+          <artifactId>commons-fields</artifactId>
+          <version>0.1.0-SNAPSHOT</version>
+        </dependency>
+
     <!-- GWT dependencies -->
     <dependency>
       <groupId>com.google.gwt</groupId>
