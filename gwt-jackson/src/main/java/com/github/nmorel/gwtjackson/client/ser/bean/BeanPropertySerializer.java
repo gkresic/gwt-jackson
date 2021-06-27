@@ -29,95 +29,92 @@ import com.github.nmorel.gwtjackson.client.stream.JsonWriter;
  */
 public abstract class BeanPropertySerializer<T, V> extends HasSerializer<V, JsonSerializer<V>> {
 
-    protected final String propertyName;
+	protected final String propertyName;
 
-    private JsonSerializerParameters parameters;
+	private JsonSerializerParameters parameters;
 
-    /**
-     * <p>Constructor for BeanPropertySerializer.</p>
-     *
-     * @param propertyName a {@link java.lang.String} object.
-     */
-    protected BeanPropertySerializer( String propertyName ) {
-        this.propertyName = propertyName;
-    }
+	/**
+	 * <p>Constructor for BeanPropertySerializer.</p>
+	 *
+	 * @param propertyName a {@link java.lang.String} object.
+	 */
+	protected BeanPropertySerializer( String propertyName ) {
+		this.propertyName = propertyName;
+	}
 
-    /**
-     * <p>Getter for the field <code>parameters</code>.</p>
-     *
-     * @return a {@link com.github.nmorel.gwtjackson.client.JsonSerializerParameters} object.
-     */
-    protected JsonSerializerParameters getParameters() {
-        if ( null == parameters ) {
-            parameters = newParameters();
-        }
-        return parameters;
-    }
+	/**
+	 * <p>Getter for the field <code>parameters</code>.</p>
+	 *
+	 * @return a {@link com.github.nmorel.gwtjackson.client.JsonSerializerParameters} object.
+	 */
+	protected JsonSerializerParameters getParameters() {
+		if ( null == parameters ) {
+			parameters = newParameters();
+		}
+		return parameters;
+	}
 
-    /**
-     * <p>newParameters</p>
-     *
-     * @return a {@link com.github.nmorel.gwtjackson.client.JsonSerializerParameters} object.
-     */
-    protected JsonSerializerParameters newParameters() {
-        return JsonSerializerParameters.DEFAULT;
-    }
+	/**
+	 * <p>newParameters</p>
+	 *
+	 * @return a {@link com.github.nmorel.gwtjackson.client.JsonSerializerParameters} object.
+	 */
+	protected JsonSerializerParameters newParameters() {
+		return JsonSerializerParameters.DEFAULT;
+	}
 
-    /**
-     * <p>Getter for the field <code>propertyName</code>.</p>
-     *
-     * @return a {@link java.lang.String} object.
-     */
-    public String getPropertyName() {
-        return propertyName;
-    }
+	/**
+	 * <p>Getter for the field <code>propertyName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
+	public String getPropertyName() {
+		return propertyName;
+	}
 
-    /**
-     * Serializes the property name
-     *
-     * @param writer writer
-     * @param bean bean containing the property to serialize
-     * @param ctx context of the serialization process
-     */
-    public void serializePropertyName( JsonWriter writer, T bean, JsonSerializationContext ctx ) {
-        writer.unescapeName( propertyName );
-    }
+	/**
+	 * Serializes the property name
+	 *
+	 * @param writer writer
+	 * @param bean bean containing the property to serialize
+	 * @param ctx context of the serialization process
+	 */
+	public void serializePropertyName( JsonWriter writer, T bean, JsonSerializationContext ctx ) {
+		writer.unescapeName( propertyName );
+	}
 
-    /**
-     * <p>getValue</p>
-     *
-     * @param bean bean containing the property to serialize
-     * @param ctx context of the serialization process
-     * @return the property's value
-     */
-    public abstract V getValue( T bean, JsonSerializationContext ctx );
+	/**
+	 * <p>getValue</p>
+	 *
+	 * @param bean bean containing the property to serialize
+	 * @param ctx context of the serialization process
+	 * @return the property's value
+	 */
+	public abstract V getValue( T bean, JsonSerializationContext ctx );
 
-    /**
-     * Serializes the property defined for this instance.
-     *
-     * @param writer writer
-     * @param bean bean containing the property to serialize
-     * @param ctx context of the serialization process
-     */
-    public void serialize( JsonWriter writer, T bean, JsonSerializationContext ctx ) {
-    	V value;
-    	try {
-    		value = getValue( bean, ctx );
+	/**
+	 * Serializes the property defined for this instance.
+	 *
+	 * @param writer writer
+	 * @param bean bean containing the property to serialize
+	 * @param ctx context of the serialization process
+	 */
+	public void serialize( JsonWriter writer, T bean, JsonSerializationContext ctx ) {
+		V value;
+		try {
+			value = getValue( bean, ctx );
 		} catch (Exception e) {
-			boolean shouldIgnore = false;
 			Throwable t = e;
 			do {
 				if (t instanceof com.steatoda.commons.fields.FieldUnavailableException) {
-					shouldIgnore = true;
-					break;
+					// skip this property
+					writer.cancelName();
+					return;
 				}
 				t = t.getCause();
 			} while (t != null);
-			if (shouldIgnore)
-				value = null;
-			else
-				throw e;
+			throw e;
 		}
-        getSerializer().serialize( writer, value, ctx, getParameters() );
-    }
+		getSerializer().serialize( writer, value, ctx, getParameters() );
+	}
 }

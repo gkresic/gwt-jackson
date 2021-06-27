@@ -142,10 +142,10 @@
 
 	<!-- Steatoda dependencies -->
 	<dependency>
-          <groupId>com.steatoda</groupId>
-          <artifactId>commons-fields</artifactId>
-          <version>0.1.0-SNAPSHOT</version>
-        </dependency>
+		<groupId>com.steatoda</groupId>
+		<artifactId>commons-fields</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</dependency>
 
     <!-- GWT dependencies -->
     <dependency>
